@@ -40,7 +40,7 @@ const Gameboard = (function() {
 })();
 
 const Player = (function() {
-  let marker;
+  let marker = "X";
 
   function getMarker() {
     return marker;
