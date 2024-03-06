@@ -17,7 +17,7 @@ const Gameboard = (function() {
     return board;
   }
 
-  function setBoard(player) {
+  function setMarker(player) {
     let rowMove;
     let columnMove;
 
@@ -29,14 +29,13 @@ const Gameboard = (function() {
       columnMove = prompt("Column");
     } while (columnMove === null || columnMove < 0 || columnMove > 2);
 
-    console.log({rowMove, columnMove});
     board[rowMove][columnMove] = player;
   }
 
   return {
     newBoard,
     getBoard,
-    setBoard
+    setMarker
   };
 })();
 
@@ -47,7 +46,7 @@ const Player = (function() {
     return marker;
   }
 
-  function setMarker() {
+  function changeMarker() {
     if (marker === "O") {
       marker = "X";
     }
@@ -58,14 +57,12 @@ const Player = (function() {
 
   return {
     getMarker,
-    setMarker
+    changeMarker
   }
 })();
 
 function Game() {
-  const gameboard = Gameboard.newBoard();
-  console.table(Gameboard.getBoard());
-  Player.setMarker();
-  Gameboard.setBoard(Player.getMarker());
-  console.table(Gameboard.getBoard());
+  Gameboard.newBoard();
+  Player.changeMarker();
+  Gameboard.setMarker(Player.getMarker());
 }
