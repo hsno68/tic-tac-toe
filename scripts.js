@@ -17,10 +17,32 @@ const Gameboard = (function () {
     return board;
   }
 
+  function setBoard(player = "test") {
+    let rowMove;
+    let columnMove;
+
+    do {
+      rowMove = prompt("Row");
+    } while (rowMove === null || rowMove < 0 || rowMove > 2);
+
+    do {
+      columnMove = prompt("Column");
+    } while (columnMove === null || columnMove < 0 || columnMove > 2);
+
+    console.log({rowMove, columnMove});
+    board[rowMove][columnMove] = player;
+  }
+
   return {
     newBoard,
-    getBoard
+    getBoard,
+    setBoard
   };
 })();
 
-Gameboard.newBoard();
+function Game() {
+  const gameboard = Gameboard.newBoard();
+  console.table(Gameboard.getBoard());
+  Gameboard.setBoard();
+  console.table(Gameboard.getBoard());
+}
