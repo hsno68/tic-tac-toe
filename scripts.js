@@ -1,4 +1,4 @@
-const Gameboard = (function () {
+const Gameboard = (function() {
   let board;
 
   function newBoard() {
@@ -8,7 +8,7 @@ const Gameboard = (function () {
     for (let i = 0; i < rows; i++) {
       board[i] = [];
       for (let j = 0; j < columns; j++) {
-        board[i].push("0");
+        board[i].push("_");
       }
     }
   }
@@ -17,7 +17,7 @@ const Gameboard = (function () {
     return board;
   }
 
-  function setBoard(player = "test") {
+  function setBoard(player) {
     let rowMove;
     let columnMove;
 
@@ -40,9 +40,32 @@ const Gameboard = (function () {
   };
 })();
 
+const Player = (function() {
+  let marker;
+
+  function getMarker() {
+    return marker;
+  }
+
+  function setMarker() {
+    if (marker === "O") {
+      marker = "X";
+    }
+    else {
+      marker = "O";
+    }
+  }
+
+  return {
+    getMarker,
+    setMarker
+  }
+})();
+
 function Game() {
   const gameboard = Gameboard.newBoard();
   console.table(Gameboard.getBoard());
-  Gameboard.setBoard();
+  Player.setMarker();
+  Gameboard.setBoard(Player.getMarker());
   console.table(Gameboard.getBoard());
 }
