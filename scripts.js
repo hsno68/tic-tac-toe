@@ -39,30 +39,18 @@ const Gameboard = (function() {
   };
 })();
 
-const Player = (function() {
-  let marker = "X";
-
+function createPlayer(marker) {
   function getMarker() {
     return marker;
   }
 
-  function changeMarker() {
-    if (marker === "O") {
-      marker = "X";
-    }
-    else {
-      marker = "O";
-    }
-  }
-
   return {
-    getMarker,
-    changeMarker
-  }
-})();
+    getMarker
+  };
+}
 
 function Game() {
   Gameboard.newBoard();
-  Player.changeMarker();
-  Gameboard.setMarker(Player.getMarker());
+  const playerOne = createPlayer("X");
+  const playerTwo = createPlayer("O");
 }
