@@ -60,6 +60,7 @@ function Game() {
     switch(true) {
       case rowWin(boardState):
       case columnWin(boardState):
+      case diagonalWin(boardState):
         return true;
       default:
         return false;
@@ -85,6 +86,30 @@ function Game() {
         return true;
       }
     }
+    return false;
+  }
+
+  function diagonalWin(board) {
+    if (board[1][1] === "_") {
+      return false;
+    }
+
+    const container1 = [];
+    const container2 = [];
+
+    for (let i = 0, j = 2; i < board.length; i++, j--) {
+      container1.push(board[i][i]);
+      container2.push(board[i][j]);
+    }
+
+    if (container1.every(element => element !== "_" && element === container1[0])) {
+      return true;
+    }
+    
+    if (container2.every(element => element !== "_" && element === container2[0])) {
+      return true;
+    }
+
     return false;
   }
 }
