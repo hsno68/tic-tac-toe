@@ -53,4 +53,24 @@ function Game() {
   Gameboard.newBoard();
   const playerOne = createPlayer("X");
   const playerTwo = createPlayer("O");
+
+  function checkWinner() {
+    const boardState = Gameboard.getBoard();
+
+    switch(true) {
+      case rowWin(boardState):
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  function rowWin(board) {
+    for (let i = 0; i < board.length; i++) {
+      if (board[i].every(element => element !== "_" && element === board[i][0])) {
+        return true;
+      }
+    }
+    return false;
+  }
 }
