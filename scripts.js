@@ -59,6 +59,7 @@ function Game() {
 
     switch(true) {
       case rowWin(boardState):
+      case columnWin(boardState):
         return true;
       default:
         return false;
@@ -68,6 +69,19 @@ function Game() {
   function rowWin(board) {
     for (let i = 0; i < board.length; i++) {
       if (board[i].every(element => element !== "_" && element === board[i][0])) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  function columnWin(board) {
+    for (let i = 0; i < board.length; i++) {
+      const container = [];
+      for (let j = 0; j < board.length; j++) {
+        container.push(board[j][i]);
+      }
+      if (container.every(element => element !== "_" && element === container[0])) {
         return true;
       }
     }
