@@ -17,7 +17,7 @@ const Gameboard = (function() {
     return board;
   }
 
-  function setMarker(player) {
+  function placeMarker(player) {
     let rowMove;
     let columnMove;
 
@@ -35,47 +35,46 @@ const Gameboard = (function() {
   return {
     newBoard,
     getBoard,
-    setMarker
+    placeMarker
   };
 })();
 
-function createPlayer(marker) {
+const Player = (function() {
+  let marker;
+
   function getMarker() {
     return marker;
   }
 
+  function setMarker() {
+    if (!marker) {
+      marker = "X";
+    }
+    else if (marker === "X") {
+      marker = "O";
+    }
+    else {
+      marker = "X";
+    }
+  }
+
   return {
-    getMarker
-  };
-}
+    getMarker,
+    setMarker
+  }
+})();
 
 function Game() {
   Gameboard.newBoard();
-  const playerOne = createPlayer("X");
-  const playerTwo = createPlayer("O");
-  let currentPlayer;
-
   do {
-    playerSetter();
+    Player.setMarker();
     playRound();
   } while (checkWinner() === false);
-  console.log(`${currentPlayer.getMarker()} is the winner!`);
+  console.log(`${Player.getMarker()} is the winner!`);
 
   function playRound() {
-    Gameboard.setMarker(currentPlayer.getMarker());
+    Gameboard.placeMarker(Player.getMarker());
     console.table(Gameboard.getBoard());
-  }
-
-  function playerSetter() {
-    if (!currentPlayer) {
-      currentPlayer = playerOne;
-    }
-    else if (currentPlayer === playerOne) {
-      currentPlayer = playerTwo;
-    }
-    else {
-      currentPlayer = playerOne;
-    }
   }
 
   function checkWinner() {
