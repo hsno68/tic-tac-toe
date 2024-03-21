@@ -68,13 +68,13 @@ const Game = (function() {
   function init() {
     Gameboard.newBoard();
     do {
-    Player.setMarker();
-    GameController.playRound(Player.getMarker());
-    DisplayController.displayBoard(Gameboard.getBoard());
-  } while (GameController.checkWinner(Gameboard.getBoard()) === false);
-  DisplayController.displayWinner(Player.getMarker());
-}
-
+      Player.setMarker();
+      GameController.playRound(Player.getMarker());
+      DisplayController.displayBoard(Gameboard.getBoard());
+    } while (GameController.checkWinner(Gameboard.getBoard()) === false);
+    DisplayController.displayWinner(Player.getMarker());
+  }
+  
   return {
     init
   };
