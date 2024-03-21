@@ -69,9 +69,10 @@ const Game = (function() {
     Gameboard.newBoard();
     do {
     Player.setMarker();
-    GameController.playRound();
-    DisplayController.displayBoard();
-  } while (GameController.checkWinner() === false);
+    GameController.playRound(Player.getMarker());
+    DisplayController.displayBoard(Gameboard.getBoard());
+  } while (GameController.checkWinner(Gameboard.getBoard()) === false);
+  DisplayController.displayWinner(Player.getMarker());
 }
 
   return {
@@ -80,18 +81,15 @@ const Game = (function() {
 })();
 
 const GameController = (function() {
-  function playRound() {
-    Gameboard.placeMarker(Player.getMarker());
+  function playRound(player) {
+    Gameboard.placeMarker(player);
   }
 
-  function checkWinner() {
-    const boardState = Gameboard.getBoard();
-
+  function checkWinner(board) {
     switch(true) {
-      case rowWin(boardState):
-      case columnWin(boardState):
-      case diagonalWin(boardState):
-        DisplayController.displayWinner();
+      case rowWin(board):
+      case columnWin(board):
+      case diagonalWin(board):
         return true;
       default:
         return false;
@@ -100,7 +98,7 @@ const GameController = (function() {
 
   function rowWin(board) {
     for (let i = 0; i < board.length; i++) {
-      if (board[i].every(element => element !== "_" && element === board[i][0])) {
+      if (board[i].every(marker => marker !== "_" && marker === board[i][0])) {
         return true;
       }
     }
@@ -113,7 +111,7 @@ const GameController = (function() {
       for (let j = 0; j < board.length; j++) {
         container.push(board[j][i]);
       }
-      if (container.every(element => element !== "_" && element === container[0])) {
+      if (container.every(marker => marker !== "_" && marker === container[0])) {
         return true;
       }
     }
@@ -133,11 +131,11 @@ const GameController = (function() {
       container2.push(board[i][j]);
     }
 
-    if (container1.every(element => element !== "_" && element === container1[0])) {
+    if (container1.every(marker => marker !== "_" && marker === container1[0])) {
       return true;
     }
     
-    if (container2.every(element => element !== "_" && element === container2[0])) {
+    if (container2.every(marker => marker !== "_" && marker === container2[0])) {
       return true;
     }
 
@@ -151,12 +149,12 @@ const GameController = (function() {
 })();
 
 const DisplayController = (function() {
-  function displayBoard() {
-    console.table(Gameboard.getBoard());
+  function displayBoard(board) {
+    console.table(board);
   }
 
-  function displayWinner() {
-    console.log(`${Player.getMarker()} is the winner!`);
+  function displayWinner(player) {
+    console.log(`${player} is the winner!`);
   }
 
   return {
