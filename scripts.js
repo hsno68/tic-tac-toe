@@ -61,17 +61,25 @@ const Player = (function() {
   return {
     getMarker,
     setMarker
-  }
+  };
 })();
 
-function Game() {
-  Gameboard.newBoard();
-  do {
+const Game = (function() {
+  function init() {
+    Gameboard.newBoard();
+    do {
     Player.setMarker();
-    playRound();
-  } while (checkWinner() === false);
+    GameController.playRound();
+  } while (GameController.checkWinner() === false);
   console.log(`${Player.getMarker()} is the winner!`);
+  }
 
+  return {
+    init
+  };
+})();
+
+const GameController = (function() {
   function playRound() {
     Gameboard.placeMarker(Player.getMarker());
     console.table(Gameboard.getBoard());
@@ -135,4 +143,9 @@ function Game() {
 
     return false;
   }
-}
+
+  return {
+    playRound,
+    checkWinner
+  };
+})();
