@@ -67,11 +67,13 @@ const Player = (function() {
 const Game = (function() {
   function init() {
     Gameboard.newBoard();
+
     do {
       Player.setMarker();
-      GameController.playRound(Player.getMarker());
+      Gameboard.placeMarker(Player.getMarker());
       DisplayController.displayBoard(Gameboard.getBoard());
     } while (GameController.checkWinner(Gameboard.getBoard()) === false);
+
     DisplayController.displayWinner(Player.getMarker());
   }
   
@@ -81,10 +83,6 @@ const Game = (function() {
 })();
 
 const GameController = (function() {
-  function playRound(player) {
-    Gameboard.placeMarker(player);
-  }
-
   function checkWinner(board) {
     switch(true) {
       case rowWin(board):
@@ -143,7 +141,6 @@ const GameController = (function() {
   }
 
   return {
-    playRound,
     checkWinner
   };
 })();
