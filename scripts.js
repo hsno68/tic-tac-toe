@@ -72,7 +72,6 @@ const Game = (function() {
     GameController.playRound();
     DisplayController.displayBoard();
   } while (GameController.checkWinner() === false);
-  DisplayController.displayWinner();
 }
 
   return {
@@ -92,6 +91,7 @@ const GameController = (function() {
       case rowWin(boardState):
       case columnWin(boardState):
       case diagonalWin(boardState):
+        DisplayController.displayWinner();
         return true;
       default:
         return false;
