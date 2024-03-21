@@ -53,6 +53,30 @@ function Game() {
   Gameboard.newBoard();
   const playerOne = createPlayer("X");
   const playerTwo = createPlayer("O");
+  let currentPlayer;
+
+  do {
+    playerSetter();
+    playRound();
+  } while (checkWinner() === false);
+  console.log(`${currentPlayer.getMarker()} is the winner!`);
+
+  function playRound() {
+    Gameboard.setMarker(currentPlayer.getMarker());
+    console.table(Gameboard.getBoard());
+  }
+
+  function playerSetter() {
+    if (!currentPlayer) {
+      currentPlayer = playerOne;
+    }
+    else if (currentPlayer === playerOne) {
+      currentPlayer = playerTwo;
+    }
+    else {
+      currentPlayer = playerOne;
+    }
+  }
 
   function checkWinner() {
     const boardState = Gameboard.getBoard();
