@@ -29,7 +29,13 @@ const Gameboard = (function() {
       columnMove = prompt("Column");
     } while (columnMove === null || columnMove < 0 || columnMove > 2);
 
-    board[rowMove][columnMove] = player;
+    if (board[rowMove][columnMove] === "_") {
+      board[rowMove][columnMove] = player;
+    }
+    else {
+      console.log(`Row: ${rowMove}, Column ${columnMove} is already filled and not valid`);
+      placeMarker(player);
+    }
   }
 
   return {
