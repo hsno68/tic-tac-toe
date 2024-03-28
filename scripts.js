@@ -67,14 +67,16 @@ const Player = (function() {
 const Game = (function() {
   function init() {
     Gameboard.newBoard();
+    let boardState;
+    let currentPlayer;
 
     do {
-      Player.setMarker();
-      Gameboard.placeMarker(Player.getMarker());
-      DisplayController.displayBoard(Gameboard.getBoard());
-    } while (GameController.checkWinner(Gameboard.getBoard()) === false);
+      currentPlayer = GameController.setActivePlayer();
+      boardState = GameController.playRound(currentPlayer);
+      DisplayController.displayBoard(boardState);
+    } while (!GameController.checkWinner(boardState));
 
-    DisplayController.displayWinner(Player.getMarker());
+    DisplayController.displayWinner(currentPlayer);
   }
   
   return {
@@ -83,17 +85,50 @@ const Game = (function() {
 })();
 
 const GameController = (function() {
-  function checkWinner(board) {
+  function setActivePlayer() {
+    Player.setMarker();
+    return Player.getMarker();
+  }
+
+  function playRound(currentPlayer) {
+    Gameboard.placeMarker(currentPlayer);
+    return Gameboard.getBoard();
+  }
+
+  function checkWinner(boardState) {
     switch(true) {
-      case rowWin(board):
-      case columnWin(board):
-      case diagonalWin(board):
+      case WinConditions.rowWin(boardState):
+      case WinConditions.columnWin(boardState):
+      case WinConditions.diagonalWin(boardState):
         return true;
       default:
         return false;
     }
   }
 
+  return {
+    setActivePlayer,
+    playRound,
+    checkWinner
+  };
+})();
+
+const DisplayController = (function() {
+  function displayBoard(board) {
+    console.table(board);
+  }
+
+  function displayWinner(player) {
+    console.log(`${player} is the winner!`);
+  }
+
+  return {
+    displayBoard,
+    displayWinner
+  };
+})();
+
+const WinConditions = (function() {
   function rowWin(board) {
     for (let i = 0; i < board.length; i++) {
       if (board[i].every(marker => marker !== "_" && marker === board[i][0])) {
@@ -141,21 +176,8 @@ const GameController = (function() {
   }
 
   return {
-    checkWinner
-  };
-})();
-
-const DisplayController = (function() {
-  function displayBoard(board) {
-    console.table(board);
-  }
-
-  function displayWinner(player) {
-    console.log(`${player} is the winner!`);
-  }
-
-  return {
-    displayBoard,
-    displayWinner
+    rowWin,
+    columnWin,
+    diagonalWin
   };
 })();
