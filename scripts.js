@@ -90,7 +90,7 @@ const Game = (function() {
 })();
 
 const GameController = (function() {
-  let winningPlayer;
+  let gameResult;
 
   function setActivePlayer() {
     Player.setMarker();
@@ -107,10 +107,10 @@ const GameController = (function() {
       case EndConditions.rowWin(boardState):
       case EndConditions.columnWin(boardState):
       case EndConditions.diagonalWin(boardState):
-        winningPlayer =  Player.getMarker();
+        gameResult =  Player.getMarker();
         return true;
       case EndConditions.gameTie(boardState):
-        winningPlayer = "";
+        gameResult = "";
         return true;
       default:
         return false;
@@ -118,7 +118,7 @@ const GameController = (function() {
   }
 
   function getGameResult() {
-    return winningPlayer;
+    return gameResult;
   }
 
   return {
