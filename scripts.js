@@ -197,8 +197,6 @@ const EndConditions = (function() {
   }
 
   function gameTie(board) {
-    let avialableCellCount = 0;
-
     for (let i = 0; i < board.length; i++) {
       if (board[i].includes("_")) {
         return false;
