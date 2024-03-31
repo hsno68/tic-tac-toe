@@ -72,8 +72,7 @@ const Player = (function() {
 
 const Game = (function() {
   function init() {
-    Gameboard.newBoard();
-    let boardState;
+    let boardState = Gameboard.newBoard();
     let currentPlayer;
 
     do {
