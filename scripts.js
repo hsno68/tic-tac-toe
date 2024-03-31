@@ -79,7 +79,7 @@ const Game = (function() {
       currentPlayer = GameController.setActivePlayer();
       boardState = GameController.playRound(currentPlayer);
       DisplayController.displayBoard(boardState);
-    } while (!GameController.checkWinner(boardState));
+    } while (!GameController.endGame(boardState));
 
     DisplayController.displayWinner(currentPlayer);
   }
@@ -100,11 +100,12 @@ const GameController = (function() {
     return Gameboard.getBoard();
   }
 
-  function checkWinner(boardState) {
+  function endGame(boardState) {
     switch(true) {
-      case WinConditions.rowWin(boardState):
-      case WinConditions.columnWin(boardState):
-      case WinConditions.diagonalWin(boardState):
+      case EndConditions.rowWin(boardState):
+      case EndConditions.columnWin(boardState):
+      case EndConditions.diagonalWin(boardState):
+      case EndConditions.gameTie(boardState):
         return true;
       default:
         return false;
@@ -114,7 +115,7 @@ const GameController = (function() {
   return {
     setActivePlayer,
     playRound,
-    checkWinner
+    endGame
   };
 })();
 
@@ -133,7 +134,7 @@ const DisplayController = (function() {
   };
 })();
 
-const WinConditions = (function() {
+const EndConditions = (function() {
   function rowWin(board) {
     for (let i = 0; i < board.length; i++) {
       if (board[i].every(marker => marker !== "_" && marker === board[i][0])) {
@@ -180,9 +181,21 @@ const WinConditions = (function() {
     return false;
   }
 
+  function gameTie(board) {
+    let avialableCellCount = 0;
+
+    for (let i = 0; i < board.length; i++) {
+      if (board[i].includes("_")) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   return {
     rowWin,
     columnWin,
-    diagonalWin
+    diagonalWin,
+    gameTie
   };
 })();
