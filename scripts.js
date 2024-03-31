@@ -81,7 +81,7 @@ const Game = (function() {
       DisplayController.displayBoard(boardState);
     } while (!GameController.endGame(boardState));
 
-    DisplayController.displayWinner(currentPlayer);
+    DisplayController.displayResults(GameController.getGameResult());
   }
   
   return {
@@ -90,6 +90,8 @@ const Game = (function() {
 })();
 
 const GameController = (function() {
+  let winningPlayer;
+
   function setActivePlayer() {
     Player.setMarker();
     return Player.getMarker();
@@ -105,17 +107,25 @@ const GameController = (function() {
       case EndConditions.rowWin(boardState):
       case EndConditions.columnWin(boardState):
       case EndConditions.diagonalWin(boardState):
+        winningPlayer =  Player.getMarker();
+        return true;
       case EndConditions.gameTie(boardState):
+        winningPlayer = "";
         return true;
       default:
         return false;
     }
   }
 
+  function getGameResult() {
+    return winningPlayer;
+  }
+
   return {
     setActivePlayer,
     playRound,
-    endGame
+    endGame,
+    getGameResult
   };
 })();
 
@@ -124,13 +134,18 @@ const DisplayController = (function() {
     console.table(board);
   }
 
-  function displayWinner(player) {
-    console.log(`${player} is the winner!`);
+  function displayResults(player) {
+    if (player) {
+      console.log(`${player} is the winner!`);
+    }
+    else {
+      console.log("Tie game.");
+    }
   }
 
   return {
     displayBoard,
-    displayWinner
+    displayResults
   };
 })();
 
