@@ -78,7 +78,7 @@ const Game = (function() {
     do {
       currentPlayer = GameController.setActivePlayer();
       boardState = GameController.playRound(currentPlayer);
-      DisplayController.displayBoard(boardState);
+      DisplayController.renderBoard();
     } while (!GameController.endGame(boardState));
 
     DisplayController.displayResults(GameController.getGameResult());
@@ -130,8 +130,20 @@ const GameController = (function() {
 })();
 
 const DisplayController = (function() {
-  function displayBoard(board) {
-    console.table(board);
+  const body = document.querySelector("body");
+
+  function renderBoard() {
+    body.replaceChildren();
+    const boardState = Gameboard.getBoard();
+
+    for (let i = 0; i < boardState.length; i++) {
+      const row = document.createElement("div");
+      body.appendChild(row);
+      for (let j = 0; j < boardState.length; j++) {
+        const rowColumn = document.createElement("div");
+        row.appendChild(rowColumn);
+      }
+    }
   }
 
   function displayResults(player) {
@@ -144,7 +156,7 @@ const DisplayController = (function() {
   }
 
   return {
-    displayBoard,
+    renderBoard,
     displayResults
   };
 })();
