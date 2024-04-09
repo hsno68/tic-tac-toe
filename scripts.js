@@ -130,20 +130,24 @@ const GameController = (function() {
 })();
 
 const DisplayController = (function() {
-  const body = document.querySelector("body");
+  const container = document.querySelector(".container");
 
   function renderBoard() {
-    body.replaceChildren();
+    container.replaceChildren();
     const boardState = Gameboard.getBoard();
     console.table(boardState);
 
     for (let i = 0; i < boardState.length; i++) {
       const row = document.createElement("div");
-      body.appendChild(row);
+      row.classList.add("row");
+      container.appendChild(row);
       for (let j = 0; j < boardState.length; j++) {
-        const rowColumn = document.createElement("div");
-        rowColumn.textContent = `${boardState[i][j]}`;
-        row.appendChild(rowColumn);
+        const cell = document.createElement("div");
+        cell.classList.add("cell");
+        cell.setAttribute("data-row", `${i}`);
+        cell.setAttribute("data-column", `${j}`);
+        cell.textContent = `${boardState[i][j]}`;
+        row.appendChild(cell);
       }
     }
   }
