@@ -8,7 +8,7 @@ const Gameboard = (function() {
     for (let i = 0; i < rows; i++) {
       board[i] = [];
       for (let j = 0; j < columns; j++) {
-        board[i].push("_");
+        board[i].push("");
       }
     }
   }
@@ -29,7 +29,7 @@ const Gameboard = (function() {
       columnMove = prompt("Column");
     } while (columnMove === null || columnMove < 0 || columnMove > 2);
 
-    if (board[rowMove][columnMove] === "_") {
+    if (board[rowMove][columnMove] === "") {
       board[rowMove][columnMove] = player;
     }
     else {
@@ -135,12 +135,14 @@ const DisplayController = (function() {
   function renderBoard() {
     body.replaceChildren();
     const boardState = Gameboard.getBoard();
+    console.table(boardState);
 
     for (let i = 0; i < boardState.length; i++) {
       const row = document.createElement("div");
       body.appendChild(row);
       for (let j = 0; j < boardState.length; j++) {
         const rowColumn = document.createElement("div");
+        rowColumn.textContent = `${boardState[i][j]}`;
         row.appendChild(rowColumn);
       }
     }
@@ -164,7 +166,7 @@ const DisplayController = (function() {
 const EndConditions = (function() {
   function rowWin(board) {
     for (let i = 0; i < board.length; i++) {
-      if (board[i].every(marker => marker !== "_" && marker === board[i][0])) {
+      if (board[i].every(marker => marker !== "" && marker === board[i][0])) {
         return true;
       }
     }
@@ -177,7 +179,7 @@ const EndConditions = (function() {
       for (let j = 0; j < board.length; j++) {
         container.push(board[j][i]);
       }
-      if (container.every(marker => marker !== "_" && marker === container[0])) {
+      if (container.every(marker => marker !== "" && marker === container[0])) {
         return true;
       }
     }
@@ -185,7 +187,7 @@ const EndConditions = (function() {
   }
 
   function diagonalWin(board) {
-    if (board[1][1] === "_") {
+    if (board[1][1] === "") {
       return false;
     }
 
@@ -197,11 +199,11 @@ const EndConditions = (function() {
       container2.push(board[i][j]);
     }
 
-    if (container1.every(marker => marker !== "_" && marker === container1[0])) {
+    if (container1.every(marker => marker !== "" && marker === container1[0])) {
       return true;
     }
     
-    if (container2.every(marker => marker !== "_" && marker === container2[0])) {
+    if (container2.every(marker => marker !== "" && marker === container2[0])) {
       return true;
     }
 
@@ -210,7 +212,7 @@ const EndConditions = (function() {
 
   function gameTie(board) {
     for (let i = 0; i < board.length; i++) {
-      if (board[i].includes("_")) {
+      if (board[i].includes("")) {
         return false;
       }
     }
