@@ -1,40 +1,40 @@
+const container = document.querySelector(".container");
+
 const Gameboard = (function() {
   let board;
 
   function newBoard() {
+    container.replaceChildren();
     const rows = 3;
     const columns = 3;
     board = [];
     for (let i = 0; i < rows; i++) {
       board[i] = [];
+      const row = document.createElement("div");
+      row.classList.add("row");
+      container.appendChild(row);
       for (let j = 0; j < columns; j++) {
         board[i].push("");
+        const cell = document.createElement("div");
+        cell.classList.add("cell");
+        cell.setAttribute("data-row", `${i}`);
+        cell.setAttribute("data-column", `${j}`);
+        row.appendChild(cell);
       }
     }
+    console.table(board);
   }
 
   function getBoard() {
     return board;
   }
 
-  function placeMarker(player) {
-    let rowMove;
-    let columnMove;
-
-    do {
-      rowMove = prompt("Row");
-    } while (rowMove === null || rowMove < 0 || rowMove > 2);
-
-    do {
-      columnMove = prompt("Column");
-    } while (columnMove === null || columnMove < 0 || columnMove > 2);
-
-    if (board[rowMove][columnMove] === "") {
-      board[rowMove][columnMove] = player;
+  function placeMarker(player, row, column) {
+    if (board[row][column] === "") {
+      board[row][column] = player;
     }
     else {
       console.log(`Row: ${rowMove}, Column ${columnMove} is already filled and not valid`);
-      placeMarker(player);
     }
   }
 
@@ -70,105 +70,39 @@ const Player = (function() {
   };
 })();
 
-const Game = (function() {
-  function init() {
-    let boardState = Gameboard.newBoard();
-    let currentPlayer;
+const EventHandler = (function() {
+  container.addEventListener("click", (e) => {
+    playerPlaceMarkerEvent(e);
+    checkEndEvent();
+  });
 
-    do {
-      currentPlayer = GameController.setActivePlayer();
-      boardState = GameController.playRound(currentPlayer);
-      DisplayController.renderBoard();
-    } while (!GameController.endGame(boardState));
-
-    DisplayController.displayResults(GameController.getGameResult());
+  function playerPlaceMarkerEvent(e) {
+    const row = e.target.getAttribute("data-row");
+    const column = e.target.getAttribute("data-column");
+    console.log({row, column});
   }
-  
-  return {
-    init
-  };
+
+  function checkEndEvent() {
+    console.log(Ender.endGame());
+  }
 })();
 
-const GameController = (function() {
-  let gameResult;
-
-  function setActivePlayer() {
-    Player.setMarker();
-    return Player.getMarker();
-  }
-
-  function playRound(currentPlayer) {
-    Gameboard.placeMarker(currentPlayer);
-    return Gameboard.getBoard();
-  }
-
-  function endGame(boardState) {
+const Ender = (function() {
+  function endGame() {
     switch(true) {
-      case EndConditions.rowWin(boardState):
-      case EndConditions.columnWin(boardState):
-      case EndConditions.diagonalWin(boardState):
-        gameResult =  Player.getMarker();
+      case rowWin():
+      case columnWin():
+      case diagonalWin():
         return true;
-      case EndConditions.gameTie(boardState):
-        gameResult = "";
+      case gameTie():
         return true;
       default:
         return false;
     }
   }
 
-  function getGameResult() {
-    return gameResult;
-  }
-
-  return {
-    setActivePlayer,
-    playRound,
-    endGame,
-    getGameResult
-  };
-})();
-
-const DisplayController = (function() {
-  const container = document.querySelector(".container");
-
-  function renderBoard() {
-    container.replaceChildren();
-    const boardState = Gameboard.getBoard();
-    console.table(boardState);
-
-    for (let i = 0; i < boardState.length; i++) {
-      const row = document.createElement("div");
-      row.classList.add("row");
-      container.appendChild(row);
-      for (let j = 0; j < boardState.length; j++) {
-        const cell = document.createElement("div");
-        cell.classList.add("cell");
-        cell.setAttribute("data-row", `${i}`);
-        cell.setAttribute("data-column", `${j}`);
-        cell.textContent = `${boardState[i][j]}`;
-        row.appendChild(cell);
-      }
-    }
-  }
-
-  function displayResults(player) {
-    if (player) {
-      console.log(`${player} is the winner!`);
-    }
-    else {
-      console.log("Tie game.");
-    }
-  }
-
-  return {
-    renderBoard,
-    displayResults
-  };
-})();
-
-const EndConditions = (function() {
-  function rowWin(board) {
+  function rowWin() {
+    const board = Gameboard.getBoard();
     for (let i = 0; i < board.length; i++) {
       if (board[i].every(marker => marker !== "" && marker === board[i][0])) {
         return true;
@@ -177,7 +111,8 @@ const EndConditions = (function() {
     return false;
   }
 
-  function columnWin(board) {
+  function columnWin() {
+    const board = Gameboard.getBoard();
     for (let i = 0; i < board.length; i++) {
       const container = [];
       for (let j = 0; j < board.length; j++) {
@@ -190,7 +125,8 @@ const EndConditions = (function() {
     return false;
   }
 
-  function diagonalWin(board) {
+  function diagonalWin() {
+    const board = Gameboard.getBoard();
     if (board[1][1] === "") {
       return false;
     }
@@ -214,7 +150,8 @@ const EndConditions = (function() {
     return false;
   }
 
-  function gameTie(board) {
+  function gameTie() {
+    const board = Gameboard.getBoard();
     for (let i = 0; i < board.length; i++) {
       if (board[i].includes("")) {
         return false;
@@ -224,9 +161,8 @@ const EndConditions = (function() {
   }
 
   return {
-    rowWin,
-    columnWin,
-    diagonalWin,
-    gameTie
+    endGame
   };
 })();
+
+Gameboard.newBoard();
