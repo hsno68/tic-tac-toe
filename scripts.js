@@ -70,13 +70,13 @@ const Player = (function() {
   };
 })();
 
-const EventHandler = (function() {
+(function() {
   container.addEventListener("click", (e) => {
-    playerPlaceMarkerEvent(e);
+    placeMarkerEvent(e);
     checkEndEvent();
   });
 
-  function playerPlaceMarkerEvent(e) {
+  function placeMarkerEvent(e) {
     const row = e.target.getAttribute("data-row");
     const column = e.target.getAttribute("data-column");
     console.log({row, column});
