@@ -4,7 +4,7 @@ const Gameboard = (function() {
 
   container.addEventListener("click", setBoard);
   button.addEventListener("click", newBoard);
-  
+
   let board;
 
   function newBoard() {
@@ -97,9 +97,17 @@ const Player = (function() {
 function Game() {
   const container = document.querySelector(".container");
   container.addEventListener("click", () => {
-    Player.setMarker();
-    Ender();
+    if (Ender() === "win") {
+      console.log(`${Player.getMarker()} is the winner!`);
+    }
+    else if (Ender() === "tie") {
+      console.log("It's a tie.");
+    }
+    else {
+      Player.setMarker();
+    }
   });
+
   Gameboard.newBoard();
 }
 
