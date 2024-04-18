@@ -1,62 +1,78 @@
-const container = document.querySelector(".container");
-
 const Gameboard = (function() {
+  const container = document.querySelector(".container");
+  container.addEventListener("click", setBoard);
   let board;
 
   function newBoard() {
-    container.replaceChildren();
+    board = [];
     const rows = 3;
     const columns = 3;
-    board = [];
     for (let i = 0; i < rows; i++) {
       board[i] = [];
-      const row = document.createElement("div");
-      row.classList.add("row");
-      container.appendChild(row);
       for (let j = 0; j < columns; j++) {
-        board[i].push("");
-        const cell = document.createElement("div");
-        cell.classList.add("cell");
-        cell.setAttribute("data-row", `${i}`);
-        cell.setAttribute("data-column", `${j}`);
-        row.appendChild(cell);
+        board[i].push(Cell);
       }
     }
-    console.table(board);
+    render();
+  }
+
+  function setBoard(e) {
+    const row = e.target.getAttribute("data-row");
+    const column = e.target.getAttribute("data-column");
+    board[row][column] = Player.getMarker();
   }
 
   function getBoard() {
     return board;
   }
 
-  function placeMarker(player, row, column) {
-    if (board[row][column] === "") {
-      board[row][column] = player;
+  function render() {
+    container.replaceChildren();
+    for (let i = 0; i < board.length; i++) {
+      const row = document.createElement("div");
+      row.classList.add("row");
+      container.appendChild(row);
+      for (let j = 0; j < board.length; j++) {
+        const cell = document.createElement("div");
+        cell.setAttribute("data-row", `${i}`);
+        cell.setAttribute("data-column", `${j}`);
+        cell.classList.add("cell");
+        row.appendChild(cell);
+      }
     }
-    else {
-      console.log(`Row: ${rowMove}, Column ${columnMove} is already filled and not valid`);
-    }
+    console.table(board);
   }
 
   return {
     newBoard,
-    getBoard,
-    placeMarker
+    getBoard
+  };
+})();
+
+const Cell = (function() {
+  const container = document.querySelector(".container");
+  container.addEventListener("click", render);
+
+  function getMarker(e) {
+    return e.target.textContent;
+  }
+
+  function render(e) {
+    const currentPlayer = Player.getMarker();
+    e.target.textContent = currentPlayer;
+    console.table(Gameboard.getBoard());
+  }
+
+  return {
+    getMarker
   };
 })();
 
 const Player = (function() {
-  let marker;
-
-  function getMarker() {
-    return marker;
-  }
+  let marker = "X";
 
   function setMarker() {
-    if (!marker) {
-      marker = "X";
-    }
-    else if (marker === "X") {
+    if (marker === "X") {
       marker = "O";
     }
     else {
@@ -64,45 +80,43 @@ const Player = (function() {
     }
   }
 
+  function getMarker() {
+    return marker;
+  }
+
   return {
-    getMarker,
-    setMarker
+    setMarker,
+    getMarker
   };
 })();
 
-(function() {
-  container.addEventListener("click", (e) => {
-    placeMarkerEvent(e);
-    checkEndEvent();
+function Game() {
+  const container = document.querySelector(".container");
+  container.addEventListener("click", () => {
+    Player.setMarker();
+    Ender();
   });
+  Gameboard.newBoard();
+}
 
-  function placeMarkerEvent(e) {
-    const row = e.target.getAttribute("data-row");
-    const column = e.target.getAttribute("data-column");
-    console.log({row, column});
-  }
+function Ender() {
+  const board = Gameboard.getBoard();
+  endGame(board);
 
-  function checkEndEvent() {
-    console.log(Ender.endGame());
-  }
-})();
-
-const Ender = (function() {
-  function endGame() {
+  function endGame(board) {
     switch(true) {
-      case rowWin():
-      case columnWin():
-      case diagonalWin():
-        return true;
-      case gameTie():
-        return true;
+      case rowWin(board):
+      case columnWin(board):
+      case diagonalWin(board):
+        return "win";
+      case gameTie(board):
+        return "tie";
       default:
         return false;
     }
   }
 
-  function rowWin() {
-    const board = Gameboard.getBoard();
+  function rowWin(board) {
     for (let i = 0; i < board.length; i++) {
       if (board[i].every(marker => marker !== "" && marker === board[i][0])) {
         return true;
@@ -111,8 +125,7 @@ const Ender = (function() {
     return false;
   }
 
-  function columnWin() {
-    const board = Gameboard.getBoard();
+  function columnWin(board) {
     for (let i = 0; i < board.length; i++) {
       const container = [];
       for (let j = 0; j < board.length; j++) {
@@ -125,8 +138,7 @@ const Ender = (function() {
     return false;
   }
 
-  function diagonalWin() {
-    const board = Gameboard.getBoard();
+  function diagonalWin(board) {
     if (board[1][1] === "") {
       return false;
     }
@@ -150,8 +162,7 @@ const Ender = (function() {
     return false;
   }
 
-  function gameTie() {
-    const board = Gameboard.getBoard();
+  function gameTie(board) {
     for (let i = 0; i < board.length; i++) {
       if (board[i].includes("")) {
         return false;
@@ -159,10 +170,6 @@ const Ender = (function() {
     }
     return true;
   }
+}
 
-  return {
-    endGame
-  };
-})();
-
-Gameboard.newBoard();
+Game();
