@@ -1,6 +1,10 @@
 const Gameboard = (function() {
   const container = document.querySelector(".container");
+  const button = document.querySelector("button");
+
   container.addEventListener("click", setBoard);
+  button.addEventListener("click", newBoard);
+  
   let board;
 
   function newBoard() {
