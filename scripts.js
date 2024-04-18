@@ -31,19 +31,6 @@ const Gameboard = (function() {
   }
 
   function render() {
-    container.replaceChildren();
-    for (let i = 0; i < board.length; i++) {
-      const row = document.createElement("div");
-      row.classList.add("row");
-      container.appendChild(row);
-      for (let j = 0; j < board.length; j++) {
-        const cell = document.createElement("div");
-        cell.setAttribute("data-row", `${i}`);
-        cell.setAttribute("data-column", `${j}`);
-        cell.classList.add("cell");
-        row.appendChild(cell);
-      }
-    }
     console.table(board);
   }
 
