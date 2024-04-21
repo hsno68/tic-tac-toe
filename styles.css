@@ -39,4 +39,7 @@ body {
   width: 500px;
   height: 200px;
   border: 1px solid #f1f1f1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
