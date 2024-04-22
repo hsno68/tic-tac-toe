@@ -1,8 +1,5 @@
 const Gameboard = (function() {
   const container = document.querySelector(".container");
-  const button = document.querySelector("button");
-
-  button.addEventListener("click", newBoard);
 
   let board;
   const rows = 3;
@@ -19,8 +16,9 @@ const Gameboard = (function() {
     render();
   }
 
-  function setBoard(row, column) {
-    board[row][column] = Cell.getMarker();
+  function setBoard(row, column, currentPlayer) {
+    board[row][column] = currentPlayer;
+    render();
   }
 
   function getBoard() {
@@ -38,13 +36,11 @@ const Gameboard = (function() {
         cell.classList.add("cell");
         cell.setAttribute("data-row", `${i}`);
         cell.setAttribute("data-column", `${j}`);
+        cell.textContent = board[i][j];
         row.appendChild(cell);
       }
     }
-    console.table(board);
   }
-
-  newBoard();
 
   return {
     newBoard,
@@ -54,28 +50,6 @@ const Gameboard = (function() {
 })();
 
 const Cell = (function() {
-  const container = document.querySelector(".container");
-  const button = document.querySelector("button");
-
-  container.addEventListener("click", (e) => {
-    if (e.target.textContent !== "") {
-      return;
-    }
-    const row = e.target.getAttribute("data-row");
-    const column = e.target.getAttribute("data-column");
-    Gameboard.setBoard(row, column);
-    render(e);
-    if (!Ender.endGame()) {
-      Announcer.setMessage(getMarker(), row, column);
-      setMarker();
-    }
-    else {
-      
-    }
-  });
-
-  button.addEventListener("click", clearMarker);
-
   let marker = "";
 
   function clearMarker() {
@@ -94,18 +68,13 @@ const Cell = (function() {
     }
   }
 
-  function getMarker(e) {
+  function getMarker() {
     return marker;
   }
 
-  function render(e) {
-    e.target.textContent = getMarker();
-    console.table(Gameboard.getBoard());
-  }
-
-  setMarker();
-
   return {
+    clearMarker,
+    setMarker,
     getMarker
   };
 })();
@@ -113,21 +82,55 @@ const Cell = (function() {
 const Announcer = (function() {
   const announcer = document.querySelector(".announcer");
 
-  function setMessage(marker, row, column) {
-    if (!Ender.endGame()) {
-      announcer.textContent = `${marker}'s turn, placing it at Row: ${row}, Column: ${column}`;
-      return;
-    }
+  function setMessage(message) {
+    announcer.textContent = message;
   }
-
+  
   return {
     setMessage
-  }
+  };
 })();
 
-const Ender = (function() {
-  function endGame() {
+const Game = (function() {
+  const button = document.querySelector("button");
+  const container = document.querySelector(".container");
+
+  button.addEventListener("click", () => {
+    Cell.clearMarker();
+    Gameboard.newBoard();
+    Announcer.setMessage("");
+  });
+
+  container.addEventListener("click", (e) => {
     const board = Gameboard.getBoard();
+    const row = e.target.getAttribute("data-row");
+    const column = e.target.getAttribute("data-column");
+
+    if (board[row][column] !== "") {
+      return;
+    }
+
+    const currentPlayer = Cell.getMarker();
+    Gameboard.setBoard(row, column, currentPlayer);
+    Announcer.setMessage(`${currentPlayer}'s turn. Placing marker at Row: ${+row + 1}, Column: ${+column + 1}.`);
+
+    if (!endGame(board)) {
+      Cell.setMarker();
+    }
+    else if (endGame(board) === "win") {
+      Announcer.setMessage(`${currentPlayer} wins!`);
+    }
+    else if (endGame(board) === "tie") {
+      Announcer.setMessage("It's a tie.");
+    }
+    
+    console.table(board);
+  });
+
+  Gameboard.newBoard();
+  Cell.setMarker();
+
+  function endGame(board) {
     switch(true) {
       case rowWin(board):
       case columnWin(board):
@@ -193,9 +196,5 @@ const Ender = (function() {
       }
     }
     return true;
-  }
-
-  return {
-    endGame
   }
 })();
