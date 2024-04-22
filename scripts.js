@@ -99,6 +99,7 @@ const Game = (function() {
     Cell.clearMarker();
     Gameboard.newBoard();
     Announcer.setMessage("");
+    Cell.setMarker();
   });
 
   container.addEventListener("click", (e) => {
@@ -123,7 +124,7 @@ const Game = (function() {
     else if (endGame(board) === "tie") {
       Announcer.setMessage("It's a tie.");
     }
-    
+
     console.table(board);
   });
 
