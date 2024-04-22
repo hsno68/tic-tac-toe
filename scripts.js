@@ -124,8 +124,6 @@ const Game = (function() {
     else if (endGame(board) === "tie") {
       Announcer.setMessage("It's a tie.");
     }
-
-    console.table(board);
   });
 
   Gameboard.newBoard();
